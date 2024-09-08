@@ -1,12 +1,12 @@
 // CategoryContext.tsx
-import { createContext, useState, useContext, ReactNode } from 'react';
-import { Category } from '../models/category';
+import { createContext, useState, useContext, ReactNode } from "react";
+import { Category } from "../models/category";
 import {
   createCategory,
   updateCategory,
   listCategories,
   deleteCategory,
-} from '../api/categoryApi';
+} from "../api/categoryApi";
 
 type CategoryResponse = {
   data: Category[];
@@ -26,12 +26,15 @@ type CategoryContextType = {
   canLoadMore: boolean;
 };
 
-const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
+const CategoryContext = createContext<CategoryContextType | undefined>(
+  undefined
+);
 
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [page, setPage] = useState<number>(1);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [categoryResponse, setCategoryResponse] = useState<CategoryResponse | null>(null);
+  const [categoryResponse, setCategoryResponse] =
+    useState<CategoryResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,10 +45,18 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await listCategories(page, limit);
       setCategoryResponse(response);
-      setCategories((prevCategories) => [
-        ...prevCategories,
-        ...(response.data as Category[]),
-      ]);
+      setCategories((prevCategories) => {
+        const existingCategoryIds = new Set(
+          prevCategories.map((category) => category._id)
+        );
+        const newCategories = response.data as Category[];
+        return [
+          ...prevCategories,
+          ...newCategories.filter(
+            (category) => !existingCategoryIds.has(category._id)
+          ), // Only add new categories
+        ];
+      });
       if (response.page < response.totalPages) {
         setPage(page + 1);
         setCanLoadMore(true);
@@ -53,7 +64,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         setCanLoadMore(false);
       }
     } catch (err) {
-      setError('Failed to fetch categories');
+      setError("Failed to fetch categories");
     } finally {
       setLoading(false);
     }
@@ -66,7 +77,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
       const newCategory = await createCategory(name);
       setCategories((prevCategories) => [...prevCategories, newCategory]);
     } catch (err) {
-      setError('Failed to create category');
+      setError("Failed to create category");
     } finally {
       setLoading(false);
     }
@@ -83,7 +94,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         )
       );
     } catch (err) {
-      setError('Failed to update category');
+      setError("Failed to update category");
     } finally {
       setLoading(false);
     }
@@ -98,7 +109,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         prevCategories.filter((category) => category._id !== id)
       );
     } catch (err) {
-      setError('Failed to delete category');
+      setError("Failed to delete category");
     } finally {
       setLoading(false);
     }
@@ -126,7 +137,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
 export const useCategory = () => {
   const context = useContext(CategoryContext);
   if (!context) {
-    throw new Error('useCategory must be used within a CategoryProvider');
+    throw new Error("useCategory must be used within a CategoryProvider");
   }
   return context;
 };

@@ -1,12 +1,12 @@
 // WalletContext.tsx
-import { createContext, useState, useContext, ReactNode } from 'react';
-import { Wallet } from '../models/wallet';
+import { createContext, useState, useContext, ReactNode } from "react";
+import { Wallet } from "../models/wallet";
 import {
   createWallet,
   updateWallet,
   listWallets,
   deleteWallet,
-} from '../api/walletApi';
+} from "../api/walletApi";
 
 type WalletContextType = {
   walletResponse: any; // Add response state for wallets
@@ -42,9 +42,18 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setCanLoadMore(false);
       }
-      setWallets((prevWallets) => [...prevWallets, ...(response.data as Wallet[])]);
+      setWallets((prevWallets) => {
+        const existingWalletIds = new Set(
+          prevWallets.map((wallet) => wallet._id)
+        );
+        const newWallets = response.data as Wallet[];
+        return [
+          ...prevWallets,
+          ...newWallets.filter((wallet) => !existingWalletIds.has(wallet._id)), // Only add new wallets
+        ];
+      });
     } catch (err) {
-      setError('Failed to fetch wallets');
+      setError("Failed to fetch wallets");
     } finally {
       setLoading(false);
     }
@@ -57,7 +66,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const newWallet = await createWallet(name);
       setWallets((prevWallets) => [...prevWallets, newWallet]);
     } catch (err) {
-      setError('Failed to create wallet');
+      setError("Failed to create wallet");
     } finally {
       setLoading(false);
     }
@@ -69,10 +78,12 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     try {
       const updatedWallet = await updateWallet(id, name);
       setWallets((prevWallets) =>
-        prevWallets.map((wallet) => (wallet._id === id ? updatedWallet : wallet))
+        prevWallets.map((wallet) =>
+          wallet._id === id ? updatedWallet : wallet
+        )
       );
     } catch (err) {
-      setError('Failed to update wallet');
+      setError("Failed to update wallet");
     } finally {
       setLoading(false);
     }
@@ -83,9 +94,11 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       await deleteWallet(id);
-      setWallets((prevWallets) => prevWallets.filter((wallet) => wallet._id !== id));
+      setWallets((prevWallets) =>
+        prevWallets.filter((wallet) => wallet._id !== id)
+      );
     } catch (err) {
-      setError('Failed to delete wallet');
+      setError("Failed to delete wallet");
     } finally {
       setLoading(false);
     }
@@ -113,7 +126,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 export const useWallet = () => {
   const context = useContext(WalletContext);
   if (!context) {
-    throw new Error('useWallet must be used within a WalletProvider');
+    throw new Error("useWallet must be used within a WalletProvider");
   }
   return context;
 };

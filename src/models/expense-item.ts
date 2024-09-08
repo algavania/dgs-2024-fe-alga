@@ -1,9 +1,10 @@
 import { Category } from "./category";
+import { Wallet } from "./wallet";
 
 export interface ExpenseItem {
     _id: string;
     category?: Category | null;
-    wallet: string;
+    wallet?: Wallet;
     amount: number;
     title: string;
     flowType: string;

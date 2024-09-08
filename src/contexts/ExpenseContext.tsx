@@ -14,8 +14,21 @@ type ExpenseContextType = {
   loading: boolean;
   error: string | null;
   fetchExpenses: (page?: number, limit?: number) => void;
-  addExpense: (name: string) => void;
-  editExpense: (id: string, name: string) => void;
+  addExpense: (
+    title: string,
+    amount: number,
+    wallet: string,
+    category: string,
+    flowType: string
+  ) => void;
+  editExpense: (
+    id: string,
+    title: string,
+    amount: number,
+    flowType: string,
+    wallet?: string,
+    category?: string
+  ) => void;
   removeExpense: (id: string) => void;
   canLoadMore: boolean;
 };
@@ -30,7 +43,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchExpenses = async (limit: number = 10) => {
+  const fetchExpenses = async (page: number = 1, limit: number = 10) => {
     setLoading(true);
     setError(null);
     try {
@@ -42,7 +55,14 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setCanLoadMore(false);
       }
-      setExpenses((prevExpenses) => [...prevExpenses, ...(response.data as ExpenseItem[])]);
+      setExpenses((prevExpenses) => {
+        const existingIds = new Set(prevExpenses.map((expense) => expense._id));
+        const newExpenses = response.data as ExpenseItem[];
+        return [
+          ...prevExpenses,
+          ...newExpenses.filter((expense) => !existingIds.has(expense._id)), // Only add new expenses
+        ];
+      });
     } catch (err) {
       setError("Failed to fetch expenses");
     } finally {
@@ -50,12 +70,22 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const addExpense = async (name: string) => {
+  // Add new expense and reset pagination to fetch updated data
+  const addExpense = async (
+    title: string,
+    amount: number,
+    wallet: string,
+    category: string,
+    flowType: string
+  ) => {
     setLoading(true);
     setError(null);
     try {
-      const newExpense = await createExpense(name);
-      setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+      await createExpense(title, amount, wallet, category, flowType);
+      // Reset pagination and fetch expenses again
+      setPage(1);
+      setExpenses([]); // Clear previous expenses
+      await fetchExpenses(1); // Fetch the first page after adding
     } catch (err) {
       setError("Failed to create expense");
     } finally {
@@ -63,16 +93,23 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const editExpense = async (id: string, name: string) => {
+  // Edit expense and reset pagination to fetch updated data
+  const editExpense = async (
+    id: string,
+    title: string,
+    amount: number,
+    flowType: string,
+    wallet?: string,
+    category?: string
+  ) => {
     setLoading(true);
     setError(null);
     try {
-      const updatedExpense = await updateExpense(id, name);
-      setExpenses((prevExpenses) =>
-        prevExpenses.map((expense) =>
-          expense._id === id ? updatedExpense : expense
-        )
-      );
+      await updateExpense(id, title, amount, flowType, wallet, category);
+      // Reset pagination and fetch expenses again
+      setPage(1);
+      setExpenses([]); // Clear previous expenses
+      await fetchExpenses(1); // Fetch the first page after updating
     } catch (err) {
       setError("Failed to update expense");
     } finally {
@@ -85,9 +122,10 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       await deleteExpense(id);
-      setExpenses((prevExpenses) =>
-        prevExpenses.filter((expense) => expense._id !== id)
-      );
+      // Reset pagination and fetch expenses again
+      setPage(1);
+      setExpenses([]); // Clear previous expenses
+      await fetchExpenses(1); // Fetch the first page after deleting
     } catch (err) {
       setError("Failed to delete expense");
     } finally {
