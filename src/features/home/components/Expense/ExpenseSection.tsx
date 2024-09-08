@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
-import Button from "../../../components/Button/Button";
-import { useExpense } from "../../../contexts/ExpenseContext";
-import { getCurrentFormattedDate } from "../../../utils/dateFormatter";
 import ExpenseCard from "./ExpenseCard";
-import Loading from "../../../components/Loading/Loading";
 import { useSnackbar } from "notistack";
 import { Add } from "iconsax-react";
 import ExpenseModal from "./ExpenseModal";
+import { useExpense } from "../../../../contexts/ExpenseContext";
+import Loading from "../../../../components/Loading/Loading";
+import { getCurrentFormattedDate } from "../../../../utils/dateFormatter";
 
 export default function ExpenseSection() {
   const {
     expenses,
-    expenseResponse,
     canLoadMore,
     fetchExpenses,
     loading,

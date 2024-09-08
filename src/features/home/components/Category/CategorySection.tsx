@@ -1,24 +1,22 @@
 import { useEffect } from "react";
-import Button from "../../../components/Button/Button";
-import { useWallet } from "../../../contexts/WalletContext";
-import WalletCard from "./WalletCard";
-import Loading from "../../../components/Loading/Loading";
+import { useCategory } from "../../../../contexts/CategoryContext";
+import CategoryCard from "./CategoryCard";
+import Loading from "../../../../components/Loading/Loading";
 import { useSnackbar } from "notistack";
-import { AddSquare } from "iconsax-react";
 
-export default function WalletSection() {
-  const { wallets, canLoadMore, fetchWallets, loading, error: walletError } = useWallet();
+export default function CategorySection() {
+  const { categories, canLoadMore, fetchCategories, loading, error: categoryError } = useCategory();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    fetchWallets();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
-    if (walletError) {
-      enqueueSnackbar(walletError, { variant: "error" });
+    if (categoryError) {
+      enqueueSnackbar(categoryError, { variant: "error" });
     }
-  }, [walletError, enqueueSnackbar]);
+  }, [categoryError, enqueueSnackbar]);
 
   if (loading) {
     return <Loading />;
@@ -26,8 +24,8 @@ export default function WalletSection() {
 
   return (
     <section>
-      <div className="flex justify-between items-center">
-        <h1 className="text-lg text-gray-700 font-bold">Wallets</h1>
+      <div className="flex justify-between">
+        <h1 className="text-lg text-gray-700 font-bold">Categories</h1>
         <div
           className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
         >
@@ -35,8 +33,8 @@ export default function WalletSection() {
         </div>
       </div>
 
-      {wallets.map((wallet) => (
-        <WalletCard key={wallet._id} wallet={wallet} />
+      {categories.map((category) => (
+        <CategoryCard key={category._id} category={category} />
       ))}
 
       {canLoadMore && (
@@ -44,13 +42,13 @@ export default function WalletSection() {
           <div
             className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
             onClick={() => {
-              fetchWallets();
+              fetchCategories();
             }}
           >
             Load More
           </div>
         </div>
-      )}
+    )}
     </section>
   );
 }

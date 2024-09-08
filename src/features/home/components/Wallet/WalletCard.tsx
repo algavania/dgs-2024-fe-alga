@@ -1,5 +1,5 @@
 import { Wallet3 } from "iconsax-react";
-import { Wallet } from "../../../models/wallet";
+import { Wallet } from "../../../../models/wallet";
 
 export default function WalletCard({ wallet }: { wallet: Wallet }) {
   return (

@@ -1,5 +1,5 @@
 import { Category2 } from "iconsax-react";
-import { Category } from "../../../models/category";
+import { Category } from "../../../../models/category";
 
 export default function CategoryCard({ category }: { category: Category }) {
   return (

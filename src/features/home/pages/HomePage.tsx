@@ -1,6 +1,6 @@
-import ExpenseSection from "../components/ExpenseSection";
-import WalletSection from "../components/WalletSection.tsx";
-import CategorySection from "../components/CategorySection.tsx";
+import CategorySection from "../components/Category/CategorySection";
+import ExpenseSection from "../components/Expense/ExpenseSection";
+import WalletSection from "../components/Wallet/WalletSection";
 
 export default function HomePage() {
   return (

@@ -1,23 +1,22 @@
 import { useEffect } from "react";
-import { useCategory } from "../../../contexts/CategoryContext";
-import CategoryCard from "./CategoryCard";
-import Loading from "../../../components/Loading/Loading";
+import WalletCard from "./WalletCard";
 import { useSnackbar } from "notistack";
-import { AddSquare } from "iconsax-react";
+import { useWallet } from "../../../../contexts/WalletContext";
+import Loading from "../../../../components/Loading/Loading";
 
-export default function CategorySection() {
-  const { categories, canLoadMore, fetchCategories, loading, error: categoryError } = useCategory();
+export default function WalletSection() {
+  const { wallets, canLoadMore, fetchWallets, loading, error: walletError } = useWallet();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    fetchCategories();
+    fetchWallets();
   }, []);
 
   useEffect(() => {
-    if (categoryError) {
-      enqueueSnackbar(categoryError, { variant: "error" });
+    if (walletError) {
+      enqueueSnackbar(walletError, { variant: "error" });
     }
-  }, [categoryError, enqueueSnackbar]);
+  }, [walletError, enqueueSnackbar]);
 
   if (loading) {
     return <Loading />;
@@ -25,8 +24,8 @@ export default function CategorySection() {
 
   return (
     <section>
-      <div className="flex justify-between">
-        <h1 className="text-lg text-gray-700 font-bold">Categories</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-lg text-gray-700 font-bold">Wallets</h1>
         <div
           className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
         >
@@ -34,8 +33,8 @@ export default function CategorySection() {
         </div>
       </div>
 
-      {categories.map((category) => (
-        <CategoryCard key={category._id} category={category} />
+      {wallets.map((wallet) => (
+        <WalletCard key={wallet._id} wallet={wallet} />
       ))}
 
       {canLoadMore && (
@@ -43,13 +42,13 @@ export default function CategorySection() {
           <div
             className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
             onClick={() => {
-              fetchCategories();
+              fetchWallets();
             }}
           >
             Load More
           </div>
         </div>
-    )}
+      )}
     </section>
   );
 }
