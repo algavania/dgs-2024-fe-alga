@@ -5,10 +5,11 @@ import {
   createWallet,
   updateWallet,
   listWallets,
-  deleteWallet
+  deleteWallet,
 } from '../api/walletApi';
 
 type WalletContextType = {
+  walletResponse: any; // Add response state for wallets
   wallets: Wallet[];
   loading: boolean;
   error: string | null;
@@ -16,21 +17,32 @@ type WalletContextType = {
   addWallet: (name: string) => void;
   editWallet: (id: string, name: string) => void;
   removeWallet: (id: string) => void;
+  canLoadMore: boolean;
 };
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
+  const [page, setPage] = useState<number>(1);
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [walletResponse, setWalletResponse] = useState<Object>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [canLoadMore, setCanLoadMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchWallets = async (page: number = 1, limit: number = 10) => {
+  const fetchWallets = async (limit: number = 5) => {
     setLoading(true);
     setError(null);
     try {
       const response = await listWallets(page, limit);
-      setWallets(response);
+      setWalletResponse(response);
+      if (response.page < response.totalPages) {
+        setPage(page + 1);
+        setCanLoadMore(true);
+      } else {
+        setCanLoadMore(false);
+      }
+      setWallets((prevWallets) => [...prevWallets, ...(response.data as Wallet[])]);
     } catch (err) {
       setError('Failed to fetch wallets');
     } finally {
@@ -82,6 +94,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   return (
     <WalletContext.Provider
       value={{
+        walletResponse,
         wallets,
         loading,
         error,
@@ -89,6 +102,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         addWallet,
         editWallet,
         removeWallet,
+        canLoadMore,
       }}
     >
       {children}

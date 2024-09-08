@@ -3,33 +3,30 @@ import { useCategory } from "../../../contexts/CategoryContext";
 import { useExpense } from "../../../contexts/ExpenseContext";
 import { useWallet } from "../../../contexts/WalletContext";
 import ExpenseSection from "../components/ExpenseSection";
+import WalletSection from "../components/WalletSection.tsx";
+import CategorySection from "../components/CategorySection.tsx";
 
 export default function HomePage() {
   const {
     fetchCategories,
-    categories,
     loading: categoryLoading,
     error: categoryError,
   } = useCategory();
   const {
     fetchExpenses,
-    expenses,
-    expenseResponse,
     loading: expenseLoading,
     error: expenseError,
   } = useExpense();
   const {
     fetchWallets,
-    wallets,
     loading: walletLoading,
     error: walletError,
   } = useWallet();
 
   useEffect(() => {
-    // Fetch category, expense, and wallet data when component mounts
-    // fetchCategories();
+    fetchCategories();
     fetchExpenses();
-    // fetchWallets();
+    fetchWallets();
   }, []);
 
   if (categoryLoading || expenseLoading || walletLoading) {
@@ -47,8 +44,16 @@ export default function HomePage() {
   }
 
   return (
-    <section className="container">
-      <ExpenseSection expenses={expenses} expenseResponse={expenseResponse} />
+    <section className="container flex">
+      <div className="flex-auto w-full">
+        <ExpenseSection /> 
+      </div>
+      <div className="flex-1">
+        <div style={{width: "20rem"}}>
+        <WalletSection />
+        <CategorySection />
+        </div>
+      </div>
     </section>
   );
 }

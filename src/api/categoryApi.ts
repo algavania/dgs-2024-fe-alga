@@ -13,9 +13,9 @@ export const updateCategory = async (id: string, name: string): Promise<Category
   return response.data;
 };
 
-export const listCategories = async (page: number = 1, limit: number = 10): Promise<Category[]> => {
+export const listCategories = async (page: number = 1, limit: number = 10): Promise<any> => {
     const response = await apiClient.get(`${endpoint}?page=${page}&limit=${limit}`);
-    return response.data.data as Category[];
+    return response.data;
   };
   
 export const showCategory = async (id: string): Promise<Category> => {

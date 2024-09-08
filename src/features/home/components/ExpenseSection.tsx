@@ -1,14 +1,11 @@
-import { ExpenseItem } from "../../../models/expense-item";
+import Button from "../../../components/Button/Button";
+import { useExpense } from "../../../contexts/ExpenseContext";
 import { getCurrentFormattedDate } from "../../../utils/dateFormatter";
 import ExpenseCard from "./ExpenseCard";
 
-export default function ExpenseSection({
-  expenses,
-  expenseResponse,
-}: {
-  expenses: ExpenseItem[];
-  expenseResponse: any,
-}) {
+export default function ExpenseSection() {
+  const { expenses, expenseResponse, canLoadMore, fetchExpenses } = useExpense();
+
   return (
     <div>
       <div className="flex justify-between">
@@ -19,6 +16,14 @@ export default function ExpenseSection({
       {expenses.map((expense) => (
         <ExpenseCard key={expense._id} expense={expense} />
       ))}
+
+      {canLoadMore && (
+        <div className="flex justify-end">
+          <Button title="Load More" onClick={() => {
+            fetchExpenses();
+          }} />
+        </div>
+      )}
     </div>
   );
 }

@@ -13,9 +13,9 @@ export const updateWallet = async (id: string, name: string): Promise<Wallet> =>
   return response.data;
 };
 
-export const listWallets = async (page: number = 1, limit: number = 10): Promise<Wallet[]> => {
+export const listWallets = async (page: number = 1, limit: number = 10): Promise<any> => {
   const response = await apiClient.get(`${endpoint}?page=${page}&limit=${limit}`);
-  return response.data.data as Wallet[];
+  return response.data;
 };
 
 export const showWallet = async (id: string): Promise<Wallet> => {

@@ -8,7 +8,14 @@ import {
   deleteCategory,
 } from '../api/categoryApi';
 
+type CategoryResponse = {
+  data: Category[];
+  page: number;
+  totalPages: number;
+};
+
 type CategoryContextType = {
+  categoryResponse: CategoryResponse | null;
   categories: Category[];
   loading: boolean;
   error: string | null;
@@ -16,21 +23,35 @@ type CategoryContextType = {
   addCategory: (name: string) => void;
   editCategory: (id: string, name: string) => void;
   removeCategory: (id: string) => void;
+  canLoadMore: boolean;
 };
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
 
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {
+  const [page, setPage] = useState<number>(1);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoryResponse, setCategoryResponse] = useState<CategoryResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [canLoadMore, setCanLoadMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCategories = async (page: number = 1, limit: number = 10) => {
+  const fetchCategories = async (limit: number = 5) => {
     setLoading(true);
     setError(null);
     try {
       const response = await listCategories(page, limit);
-      setCategories(response);
+      setCategoryResponse(response);
+      setCategories((prevCategories) => [
+        ...prevCategories,
+        ...(response.data as Category[]),
+      ]);
+      if (response.page < response.totalPages) {
+        setPage(page + 1);
+        setCanLoadMore(true);
+      } else {
+        setCanLoadMore(false);
+      }
     } catch (err) {
       setError('Failed to fetch categories');
     } finally {
@@ -51,7 +72,6 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Edit an existing category
   const editCategory = async (id: string, name: string) => {
     setLoading(true);
     setError(null);
@@ -69,7 +89,6 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Delete a category
   const removeCategory = async (id: string) => {
     setLoading(true);
     setError(null);
@@ -88,6 +107,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CategoryContext.Provider
       value={{
+        categoryResponse,
         categories,
         loading,
         error,
@@ -95,6 +115,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
         addCategory,
         editCategory,
         removeCategory,
+        canLoadMore,
       }}
     >
       {children}
