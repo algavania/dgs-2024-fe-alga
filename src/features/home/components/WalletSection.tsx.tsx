@@ -4,6 +4,7 @@ import { useWallet } from "../../../contexts/WalletContext";
 import WalletCard from "./WalletCard";
 import Loading from "../../../components/Loading/Loading";
 import { useSnackbar } from "notistack";
+import { AddSquare } from "iconsax-react";
 
 export default function WalletSection() {
   const { wallets, canLoadMore, fetchWallets, loading, error: walletError } = useWallet();
@@ -25,9 +26,9 @@ export default function WalletSection() {
 
   return (
     <section>
-      <div className="flex justify-between">
-        <h1>Wallets</h1>
-        <Button title="Add" onClick={() => {}} />
+      <div className="flex justify-between items-center">
+        <h1 className="text-lg text-gray-700 font-bold">Wallets</h1>
+        <AddSquare size="32" color="#3b82f6" variant="Bold"/>
       </div>
 
       {wallets.map((wallet) => (

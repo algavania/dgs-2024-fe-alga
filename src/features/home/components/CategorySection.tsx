@@ -4,6 +4,7 @@ import { useCategory } from "../../../contexts/CategoryContext";
 import CategoryCard from "./CategoryCard";
 import Loading from "../../../components/Loading/Loading";
 import { useSnackbar } from "notistack";
+import { AddSquare } from "iconsax-react";
 
 export default function CategorySection() {
   const { categories, canLoadMore, fetchCategories, loading, error: categoryError } = useCategory();
@@ -26,8 +27,8 @@ export default function CategorySection() {
   return (
     <section>
       <div className="flex justify-between">
-        <h1>Categories</h1>
-        <Button title="Add" onClick={() => {}} />
+        <h1 className="text-lg text-gray-700 font-bold">Categories</h1>
+        <AddSquare size="32" color="#3b82f6" variant="Bold"/>
       </div>
 
       {categories.map((category) => (

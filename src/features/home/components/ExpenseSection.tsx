@@ -27,8 +27,8 @@ export default function ExpenseSection() {
   return (
     <div>
       <div className="flex justify-between">
-        <h2>{getCurrentFormattedDate()}</h2>
-        <p>Number of transactions: {expenseResponse?.total || 0}</p>
+        <h2 className="font-bold text-gray-700">{getCurrentFormattedDate()}</h2>
+        <p className="text-sm font-medium text-slate-600">Number of transactions: {expenseResponse?.total || 0}</p>
       </div>
 
       {expenses.map((expense) => (

@@ -1,3 +1,4 @@
+import { DirectDown, DirectUp } from "iconsax-react";
 import Button from "../../../components/Button/Button";
 import { ExpenseItem } from "../../../models/expense-item";
 import { formatRupiah } from "../../../utils/currencyFormatter";
@@ -5,29 +6,34 @@ import { formatDate } from "../../../utils/dateFormatter";
 
 export default function ExpenseCard({ expense }: { expense: ExpenseItem }) {
   let icon;
+  let nominal;
   if (expense.flowType === 'outcome') {
     icon = <div className="p-2 bg-orange-100 rounded-lg">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m17.02 21.292-3.48-1.74c-.97-.48-2.1-.48-3.07 0l-3.48 1.74c-2.99 1.49-6.14-1.72-4.58-4.67l.82-1.54c.11-.21.29-.38.51-.48l12.64-5.7c.52-.23 1.13-.02 1.39.48l3.81 7.24c1.56 2.95-1.58 6.16-4.56 4.67ZM15.6 7.69l-8.28 3.73c-.93.42-1.87-.58-1.39-1.48l3.04-5.77c1.29-2.45 4.79-2.45 6.08 0l1.07 2.04c.28.55.04 1.23-.52 1.48Z" fill="#f97316"></path></svg>
+      <DirectUp size="20" color="#f97316" variant="Bold"/>
+    </div>
+    nominal = <div className="text-orange-600 font-semibold">
+      {`-${formatRupiah(expense.amount)}`}
     </div>
   } else {
     icon = <div className="p-2 bg-emerald-100 rounded-lg">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m17.02 21.292-3.48-1.74c-.97-.48-2.1-.48-3.07 0l-3.48 1.74c-2.99 1.49-6.14-1.72-4.58-4.67l.82-1.54c.11-.21.29-.38.51-.48l12.64-5.7c.52-.23 1.13-.02 1.39.48l3.81 7.24c1.56 2.95-1.58 6.16-4.56 4.67ZM15.6 7.69l-8.28 3.73c-.93.42-1.87-.58-1.39-1.48l3.04-5.77c1.29-2.45 4.79-2.45 6.08 0l1.07 2.04c.28.55.04 1.23-.52 1.48Z" fill="#99CCFF"></path></svg>
+      <DirectDown size="20" color="#10b981" variant="Bold"/>
     </div>
+    nominal = <div className="text-emerald-600 font-semibold">
+      {`-${formatRupiah(expense.amount)}`}
+    </div>  
   }
 
   return (
     <div className="px-8 py-6 w-full my-4 bg-white border border-gray-200 rounded-lg shadow">
       <div className="flex items-center gap-12">
         <div className="flex flex-1 gap-4 items-center">
-          <div>{icon}</div>
+          {icon}
           <div>
               <p className="font-bold text-gray-700">{expense.category?.name ?? 'Expense'}</p>
               <p className="text-sm font-medium text-slate-400">{formatDate(expense.createdAt)}</p>
           </div>
         </div>
-        <div className="text-gray-700 font-semibold">
-          {`${expense.flowType === 'outcome' ? '-' : '+'}${formatRupiah(expense.amount)}`}
-        </div>
+        {nominal}
         <div className="flex gap-4 items-center">
           <div className="p-2 bg-blue-100 rounded-lg">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 22H3c-.41 0-.75-.34-.75-.75s.34-.75.75-.75h18c.41 0 .75.34.75.75s-.34.75-.75.75ZM19.02 3.482c-1.94-1.94-3.84-1.99-5.83 0l-1.21 1.21c-.1.1-.14.26-.1.4a8.129 8.129 0 0 0 5.53 5.53.4.4 0 0 0 .41-.1l1.2-1.21c.99-.98 1.47-1.93 1.47-2.89.01-.99-.47-1.95-1.47-2.94ZM15.61 11.53c-.29-.14-.57-.28-.84-.44a8.8 8.8 0 0 1-.64-.42c-.17-.11-.37-.27-.56-.43a1.22 1.22 0 0 1-.17-.15c-.33-.28-.7-.64-1.03-1.04-.03-.02-.08-.09-.15-.18-.1-.12-.27-.32-.42-.55a5.49 5.49 0 0 1-.39-.59c-.16-.27-.3-.54-.44-.82a6.88 6.88 0 0 1-.061-.135c-.148-.333-.583-.43-.84-.173L4.34 12.331c-.13.13-.25.38-.28.55l-.54 3.83c-.1.68.09 1.32.51 1.75.36.35.86.54 1.4.54.12 0 .24-.01.36-.03l3.84-.54c.18-.03.43-.15.55-.28l5.722-5.721c.26-.26.161-.705-.176-.85a26.852 26.852 0 0 1-.116-.05Z" fill="#3b82f6"></path></svg>
