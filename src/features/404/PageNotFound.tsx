@@ -1,5 +1,5 @@
 import ErrorImage from "../../assets/images/error.svg";
-import Button from "../../components/Button";
+import Button from "../../components/Button/Button";
 
 export default function PageNotFound() {
   return (

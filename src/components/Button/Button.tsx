@@ -1,9 +1,7 @@
-import { MouseEventHandler } from "react";
-
 interface ButtonProps {
   title: string;
   disabled?: boolean;
-  onClick?: MouseEventHandler | undefined;
+  onClick: () => void;
 }
 
 export default function Button({ ...props }: ButtonProps) {
