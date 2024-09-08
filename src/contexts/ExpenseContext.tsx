@@ -9,6 +9,7 @@ import {
 } from '../api/expenseApi';
 
 type ExpenseContextType = {
+  expenseResponse: any,
   expenses: ExpenseItem[];
   loading: boolean;
   error: string | null;
@@ -22,6 +23,7 @@ const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 
 export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
+  const [expenseResponse, setExpenseResponse] = useState<Object>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +32,8 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await listExpenses(page, limit);
-      setExpenses(response);
+      setExpenseResponse(response);
+      setExpenses(response.data as ExpenseItem[]);
     } catch (err) {
       setError('Failed to fetch expenses');
     } finally {
@@ -82,6 +85,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ExpenseContext.Provider
       value={{
+        expenseResponse,
         expenses,
         loading,
         error,

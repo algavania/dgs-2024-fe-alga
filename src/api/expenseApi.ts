@@ -13,9 +13,9 @@ export const updateExpense = async (id: string, name: string): Promise<ExpenseIt
   return response.data;
 };
 
-export const listExpenses = async (page: number = 1, limit: number = 10): Promise<ExpenseItem[]> => {
+export const listExpenses = async (page: number = 1, limit: number = 10): Promise<any> => {
   const response = await apiClient.get(`${endpoint}?page=${page}&limit=${limit}`);
-  return response.data.data as ExpenseItem[];
+  return response.data;
 };
 
 export const showExpense = async (id: string): Promise<ExpenseItem> => {

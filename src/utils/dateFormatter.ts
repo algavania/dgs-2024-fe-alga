@@ -6,11 +6,19 @@
  * @returns A string representing the formatted date.
  */
 export const formatDate = (isoString: string): string => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString('id-ID', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-  
+  const date = new Date(isoString);
+  return date.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+export const getCurrentFormattedDate = (): string => {
+  const currentDate = new Date();
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(currentDate);
+};
