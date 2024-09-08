@@ -28,7 +28,11 @@ export default function WalletSection() {
     <section>
       <div className="flex justify-between items-center">
         <h1 className="text-lg text-gray-700 font-bold">Wallets</h1>
-        <AddSquare size="32" color="#3b82f6" variant="Bold"/>
+        <div
+          className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
+        >
+          Add
+        </div>
       </div>
 
       {wallets.map((wallet) => (
@@ -36,13 +40,15 @@ export default function WalletSection() {
       ))}
 
       {canLoadMore && (
-        <div className="flex justify-end">
-          <Button
-            title="Load More"
+        <div className="flex justify-center">
+          <div
+            className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
             onClick={() => {
               fetchWallets();
             }}
-          />
+          >
+            Load More
+          </div>
         </div>
       )}
     </section>

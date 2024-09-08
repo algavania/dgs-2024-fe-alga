@@ -1,5 +1,4 @@
 import { DirectDown, DirectUp } from "iconsax-react";
-import Button from "../../../components/Button/Button";
 import { ExpenseItem } from "../../../models/expense-item";
 import { formatRupiah } from "../../../utils/currencyFormatter";
 import { formatDate } from "../../../utils/dateFormatter";
@@ -19,7 +18,7 @@ export default function ExpenseCard({ expense }: { expense: ExpenseItem }) {
       <DirectDown size="20" color="#10b981" variant="Bold"/>
     </div>
     nominal = <div className="text-emerald-600 font-semibold">
-      {`-${formatRupiah(expense.amount)}`}
+      {`+${formatRupiah(expense.amount)}`}
     </div>  
   }
 

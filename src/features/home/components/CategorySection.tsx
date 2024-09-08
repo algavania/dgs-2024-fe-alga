@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import Button from "../../../components/Button/Button";
 import { useCategory } from "../../../contexts/CategoryContext";
 import CategoryCard from "./CategoryCard";
 import Loading from "../../../components/Loading/Loading";
@@ -28,7 +27,11 @@ export default function CategorySection() {
     <section>
       <div className="flex justify-between">
         <h1 className="text-lg text-gray-700 font-bold">Categories</h1>
-        <AddSquare size="32" color="#3b82f6" variant="Bold"/>
+        <div
+          className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
+        >
+          Add
+        </div>
       </div>
 
       {categories.map((category) => (
@@ -36,15 +39,17 @@ export default function CategorySection() {
       ))}
 
       {canLoadMore && (
-        <div className="flex justify-end">
-          <Button
-            title="Load More"
+        <div className="flex justify-center">
+          <div
+            className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
             onClick={() => {
               fetchCategories();
             }}
-          />
+          >
+            Load More
+          </div>
         </div>
-      )}
+    )}
     </section>
   );
 }

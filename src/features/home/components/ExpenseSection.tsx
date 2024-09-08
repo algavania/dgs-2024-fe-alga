@@ -36,13 +36,15 @@ export default function ExpenseSection() {
       ))}
 
       {canLoadMore && (
-        <div className="flex justify-end">
-          <Button
-            title="Load More"
+        <div className="flex justify-center">
+          <div
+            className="text-sm font-medium text-blue-700 px-8 py-4 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
             onClick={() => {
               fetchExpenses();
             }}
-          />
+          >
+            Load More
+          </div>
         </div>
       )}
     </div>

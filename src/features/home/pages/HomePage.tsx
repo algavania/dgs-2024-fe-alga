@@ -8,11 +8,9 @@ export default function HomePage() {
       <div className="p-12 col-span-3 bg-slate-200">
         <ExpenseSection />
       </div>
-      <div className="p-12 col-span-1 bg-slate-100">
-        <div style={{ width: "20rem" }}>
-          <WalletSection />
-          <CategorySection />
-        </div>
+      <div className="p-12 col-span-1 bg-slate-100 flex flex-col gap-12">
+        <WalletSection />
+        <CategorySection />
       </div>
     </section>
   );
