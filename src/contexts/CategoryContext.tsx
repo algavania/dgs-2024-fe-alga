@@ -1,4 +1,3 @@
-// CategoryContext.tsx
 import { createContext, useState, useContext, ReactNode } from "react";
 import { Category } from "../models/category";
 import {
@@ -20,8 +19,8 @@ type CategoryContextType = {
   loading: boolean;
   error: string | null;
   fetchCategories: (page?: number, limit?: number) => void;
-  addCategory: (name: string) => void;
-  editCategory: (id: string, name: string) => void;
+  addCategory: (name: string, wallet: string) => void;
+  editCategory: (id: string, name: string, wallet: string) => void;
   removeCategory: (id: string) => void;
   canLoadMore: boolean;
 };
@@ -44,6 +43,9 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await listCategories(page, limit);
+      if (page == 1) {
+        setCategories([]);
+      }
       setCategoryResponse(response);
       setCategories((prevCategories) => {
         const existingCategoryIds = new Set(
@@ -54,7 +56,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
           ...prevCategories,
           ...newCategories.filter(
             (category) => !existingCategoryIds.has(category._id)
-          ), // Only add new categories
+          ),
         ];
       });
       if (response.page < response.totalPages) {
@@ -70,12 +72,14 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const addCategory = async (name: string) => {
+  const addCategory = async (name: string, wallet: string) => {
     setLoading(true);
     setError(null);
     try {
-      const newCategory = await createCategory(name);
-      setCategories((prevCategories) => [...prevCategories, newCategory]);
+      const newCategory = await createCategory(name, wallet);
+      setCategories([newCategory]);
+      setPage(1);
+      await fetchCategories();
     } catch (err) {
       setError("Failed to create category");
     } finally {
@@ -83,16 +87,18 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const editCategory = async (id: string, name: string) => {
+  const editCategory = async (id: string, name: string, wallet: string) => {
     setLoading(true);
     setError(null);
     try {
-      const updatedCategory = await updateCategory(id, name);
+      const updatedCategory = await updateCategory(id, name, wallet);
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
           category._id === id ? updatedCategory : category
         )
       );
+      setPage(1);
+      await fetchCategories();
     } catch (err) {
       setError("Failed to update category");
     } finally {
@@ -108,6 +114,8 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category._id !== id)
       );
+      setPage(1);
+      await fetchCategories();
     } catch (err) {
       setError("Failed to delete category");
     } finally {

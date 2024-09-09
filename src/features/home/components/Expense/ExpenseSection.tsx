@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ExpenseCard from "./ExpenseCard";
 import { useSnackbar } from "notistack";
-import { Add } from "iconsax-react";
 import ExpenseModal from "./ExpenseModal";
 import { useExpense } from "../../../../contexts/ExpenseContext";
 import Loading from "../../../../components/Loading/Loading";
@@ -33,30 +32,24 @@ export default function ExpenseSection() {
   }
 
   return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-6 right-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-4 inline-flex items-center shadow-lg dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
-        <Add size="32" color="white" />
-      </button>
-
-      <ExpenseModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+    <div className="relative pb-16">
       <div className="flex justify-between">
         <h2 className="font-bold text-gray-700">{getCurrentFormattedDate()}</h2>
-        <p className="text-sm font-medium text-slate-600">
-          Number of transactions: {expenses.length}
-        </p>
+        <div className="flex gap-4 items-center">
+          <p className="text-sm font-medium text-slate-600">
+            Number of transactions: {expenses.length}
+          </p>
+          <div
+            className="text-sm font-medium text-white px-4 py-2 rounded-lg bg-blue-700 hover:underline hover:shadow-sm cursor-pointer transition"
+            onClick={() => setIsModalOpen(true)}
+          >
+            Add
+          </div>
+        </div>
       </div>
-
       {expenses.map((expense) => (
         <ExpenseCard key={expense._id} expense={expense} />
       ))}
-
       {canLoadMore && (
         <div className="flex justify-center">
           <div
@@ -69,6 +62,10 @@ export default function ExpenseSection() {
           </div>
         </div>
       )}
+      <ExpenseModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

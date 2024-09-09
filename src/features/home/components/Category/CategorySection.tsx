@@ -1,12 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCategory } from "../../../../contexts/CategoryContext";
 import CategoryCard from "./CategoryCard";
+import CategoryModal from "./CategoryModal";
 import Loading from "../../../../components/Loading/Loading";
 import { useSnackbar } from "notistack";
 
 export default function CategorySection() {
   const { categories, canLoadMore, fetchCategories, loading, error: categoryError } = useCategory();
   const { enqueueSnackbar } = useSnackbar();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -24,10 +26,11 @@ export default function CategorySection() {
 
   return (
     <section>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <h1 className="text-lg text-gray-700 font-bold">Categories</h1>
         <div
           className="text-sm font-medium text-blue-700 px-4 py-2 rounded-lg hover:bg-white hover:underline hover:shadow-sm cursor-pointer transition"
+          onClick={() => setIsModalOpen(true)}
         >
           Add
         </div>
@@ -48,7 +51,12 @@ export default function CategorySection() {
             Load More
           </div>
         </div>
-    )}
+      )}
+
+      <CategoryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   );
 }

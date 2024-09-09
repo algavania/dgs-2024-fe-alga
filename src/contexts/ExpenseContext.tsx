@@ -1,4 +1,3 @@
-// ExpenseContext.tsx
 import { createContext, useState, useContext, ReactNode } from "react";
 import { ExpenseItem } from "../models/expense-item";
 import {
@@ -48,6 +47,9 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const response = await listExpenses(page, limit);
+      if (page == 1) {
+        setExpenses([]);
+      }
       setExpenseResponse(response);
       if (response.page < response.totalPages) {
         setPage(page + 1);
@@ -60,7 +62,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
         const newExpenses = response.data as ExpenseItem[];
         return [
           ...prevExpenses,
-          ...newExpenses.filter((expense) => !existingIds.has(expense._id)), // Only add new expenses
+          ...newExpenses.filter((expense) => !existingIds.has(expense._id)),
         ];
       });
     } catch (err) {
@@ -70,7 +72,6 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Add new expense and reset pagination to fetch updated data
   const addExpense = async (
     title: string,
     amount: number,
@@ -82,10 +83,9 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       await createExpense(title, amount, wallet, category, flowType);
-      // Reset pagination and fetch expenses again
       setPage(1);
-      setExpenses([]); // Clear previous expenses
-      await fetchExpenses(1); // Fetch the first page after adding
+      setExpenses([]);
+      await fetchExpenses(1);
     } catch (err) {
       setError("Failed to create expense");
     } finally {
@@ -93,7 +93,6 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Edit expense and reset pagination to fetch updated data
   const editExpense = async (
     id: string,
     title: string,
@@ -106,10 +105,9 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       await updateExpense(id, title, amount, flowType, wallet, category);
-      // Reset pagination and fetch expenses again
       setPage(1);
-      setExpenses([]); // Clear previous expenses
-      await fetchExpenses(1); // Fetch the first page after updating
+      setExpenses([]);
+      await fetchExpenses(1);
     } catch (err) {
       setError("Failed to update expense");
     } finally {
@@ -122,10 +120,9 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       await deleteExpense(id);
-      // Reset pagination and fetch expenses again
       setPage(1);
-      setExpenses([]); // Clear previous expenses
-      await fetchExpenses(1); // Fetch the first page after deleting
+      setExpenses([]);
+      await fetchExpenses(1);
     } catch (err) {
       setError("Failed to delete expense");
     } finally {
